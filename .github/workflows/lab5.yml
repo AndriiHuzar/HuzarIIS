@@ -1,19 +1,27 @@
-pipeline:
-  agent: any
-  stages:
-    - stage: "Клонування Git-репозиторію"
-      steps:
-        - dir: "HuzarIIS"
-          steps:
-            - git:
-                url: "https://github.com/AndriiHuzar/HuzarIIS.git"
-                branch: "dev"
-                changelog: true
-                poll: true
-    - stage: "Побудова проекту"
-      steps:
-        - dir: "HuzarIIS"
-          steps:
-            - script:
-                sh "npm install" # Встановлення залежностей
-                sh "npm run build" # Виконання сценарію збірки
+pipeline {
+    agent any
+    stages {
+        stage("Clone Git Repository") {
+            steps {
+                dir("HuzarIIS") {
+                    git(
+                        url: "https://github.com/AndriiHuzar/HuzarIIS.git",
+                        branch: "dev",
+                        changelog: true,
+                        poll: true
+                    )
+                }
+            }
+        }
+        stage("Build Project") {
+            steps {
+                dir("HuzarIIS"){
+                script {
+                    sh "npm install" // Install dependencies
+                    sh "npm run build" // Run build script
+                    }
+                }
+            }
+        }
+    }
+}
